@@ -20,7 +20,7 @@
                     <form method="GET" class="flex items-center space-x-2" autocomplete="off">
                         <div>
                             <label for="search" class="sr-only">{{ __('Search by Name or Category') }}</label>
-                          <input type="text" name="search" id="search" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="{{ __('Search Name, Category, Width, or Length') }}" value="{{ request('search') }}" oninput="filterInventory(this.value)">
+                            <input type="text" name="search" id="search" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full md:w-2/3 shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="{{ __('Search Name, Category, Width, or Length') }}" value="{{ request('search') }}" oninput="filterInventory(this.value)">
                         </div>
                     </form>
                 </div>

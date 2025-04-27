@@ -22,7 +22,9 @@ class IsAdmin
             return $next($request);
         }
 
+        abort(403); // 🛑 Force Forbidden instead of redirect
+        
         // Redirect to a forbidden page or back with an error message
-        return redirect()->route('dashboard')->with('error', 'You do not have administrator privileges.');
+        // return redirect()->route('dashboard')->with('error', 'You do not have administrator privileges.');
     }
 }
