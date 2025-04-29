@@ -19,12 +19,6 @@
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label for="description" :value="__('Description')" />
-                            <textarea id="description" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" name="description">{{ old('description') }}</textarea>
-                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                        </div>
-
-                        <div class="mt-4">
                             <x-input-label for="quantity" :value="__('Quantity')" />
                             <x-text-input id="quantity" class="block mt-1 w-full" type="number" name="quantity" :value="old('quantity')" required />
                             <x-input-error :messages="$errors->get('quantity')" class="mt-2" />
@@ -37,21 +31,9 @@
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label for="sku" :value="__('SKU')" />
-                            <x-text-input id="sku" class="block mt-1 w-full" type="text" name="sku" :value="old('sku')" />
-                            <x-input-error :messages="$errors->get('sku')" class="mt-2" />
-                        </div>
-
-                        <div class="mt-4">
                             <x-input-label for="category" :value="__('Category')" />
                             <x-text-input id="category" class="block mt-1 w-full" type="text" name="category" :value="old('category')" />
                             <x-input-error :messages="$errors->get('category')" class="mt-2" />
-                        </div>
-
-                        <div class="mt-4">
-                            <x-input-label for="supplier" :value="__('Supplier')" />
-                            <x-text-input id="supplier" class="block mt-1 w-full" type="text" name="supplier" :value="old('supplier')" />
-                            <x-input-error :messages="$errors->get('supplier')" class="mt-2" />
                         </div>
 
                         <div class="flex items-center justify-end mt-4">

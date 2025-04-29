@@ -36,12 +36,9 @@ class InventoryController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
             'quantity' => ['required', 'integer', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
-            'sku' => ['nullable', 'string', 'max:255', Rule::unique('inventory_items', 'sku')],
             'category' => ['nullable', 'string', 'max:255'],
-            'supplier' => ['nullable', 'string', 'max:255'],
         ]);
 
         InventoryItem::create($request->all());
@@ -64,12 +61,9 @@ class InventoryController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
             'quantity' => ['required', 'integer', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
-            'sku' => ['nullable', 'string', 'max:255', Rule::unique('inventory_items', 'sku')->ignore($inventoryItem->id)],
             'category' => ['nullable', 'string', 'max:255'],
-            'supplier' => ['nullable', 'string', 'max:255'],
         ]);
 
         $inventoryItem->update($request->all());
