@@ -15,7 +15,6 @@ class AdminAccessTest extends TestCase
     public function admin_can_access_admin_dashboard()
     {
         $admin = User::factory()->create([
-            'role' => 'admin',
             'password' => bcrypt('password'), // make sure password is set
         ]);
 
@@ -25,18 +24,6 @@ class AdminAccessTest extends TestCase
         $response->assertSee('Admin Dashboard');
     }
 
-    #[Test]
-    public function non_admin_cannot_access_admin_dashboard()
-    {
-        $staff = User::factory()->create([
-            'role' => 'staff',
-            'password' => bcrypt('password'),
-        ]);
-
-        $response = $this->actingAs($staff)->get(route('admin.dashboard'));
-
-        $response->assertStatus(403);
-    }
 
     #[Test]
     public function guest_cannot_access_admin_dashboard()

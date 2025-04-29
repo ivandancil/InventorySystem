@@ -19,15 +19,6 @@ class UserSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'), // Use a strong password in production
-            'role' => User::ROLE_ADMIN, // Use the constant defined in the User model
-        ]);
-
-        // Create a staff user
-        User::create([
-            'name' => 'Staff User',
-            'email' => 'staff@example.com',
-            'password' => Hash::make('password'),
-            'role' => User::ROLE_STAFF,
         ]);
 
     }

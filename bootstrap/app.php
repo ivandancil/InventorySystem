@@ -11,12 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias([
-            'is_admin' => \App\Http\Middleware\IsAdmin::class,
-            'is_staff' => \App\Http\Middleware\IsStaff::class,
-        ]);
-        // You can also register middleware groups here if needed
-        // $middleware->group('admin', [\App\Http\Middleware\Authenticate::class, 'is_admin']);
+        //
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

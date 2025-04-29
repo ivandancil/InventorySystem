@@ -26,6 +26,6 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('staff.dashboard')); 
+        $response->assertRedirect(route('admin.dashboard')); 
     }
 }
