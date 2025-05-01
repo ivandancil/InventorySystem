@@ -13,9 +13,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_STAFF = 'staff';
-
     /**
      * The attributes that are mass assignable.
      *
@@ -25,7 +22,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
     ];
 
     /**
@@ -48,35 +44,5 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Check if the user has the admin role.
-     */
-    public function isAdmin(): bool
-    {
-        return $this->role === self::ROLE_ADMIN;
-    }
-
-    /**
-     * Check if the user has the staff role.
-     */
-    public function isStaff(): bool
-    {
-        return $this->role === self::ROLE_STAFF;
-    }
-
-    /**
-     * Scope a query to only include admin users.
-     */
-    public function scopeAdmins($query)
-    {
-        return $query->where('role', self::ROLE_ADMIN);
-    }
-
-    /**
-     * Scope a query to only include staff users.
-     */
-    public function scopeStaff($query)
-    {
-        return $query->where('role', self::ROLE_STAFF);
-    }
+ 
 }

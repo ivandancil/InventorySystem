@@ -17,12 +17,9 @@ class InventoryItem extends Model
      */
     protected $fillable = [
         'name',
-        'description',
         'quantity',
         'price',
-        'sku',
         'category',
-        'supplier',
     ];
 
     /**
@@ -34,5 +31,22 @@ class InventoryItem extends Model
         'price' => 'decimal:2', // Cast the price to a decimal with 2 decimal places
         'quantity' => 'integer', // Cast quantity to an integer
     ];
+
+     /**
+     * Safely decrement the stock quantity without going negative.
+     *
+     * @param string $column
+     * @param int $amount
+     * @return void
+     */
+    public function safeDecrement(string $column, int $amount = 1): void
+    {
+        if ($this->$column >= $amount) {
+            $this->decrement($column, $amount);
+        } else {
+            $this->$column = 0;
+            $this->save();
+        }
+    }
 
 }

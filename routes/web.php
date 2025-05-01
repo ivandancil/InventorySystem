@@ -19,9 +19,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Admin routes protected by 'is_admin' middleware
-    Route::middleware(['is_admin'])->prefix('admin')->name('admin.')->group(function () {
         // Admin Dashboard Route
+        Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
         Route::prefix('inventory')->name('inventory.')->group(function () {
@@ -36,12 +35,7 @@ Route::middleware('auth')->group(function () {
         // Add other admin-related routes here
     });
 
-    Route::middleware(['is_staff'])->prefix('staff')->name('staff.')->group(function () {
-        Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/inventory/filter', [StaffDashboardController::class, 'filter'])->name('inventory.filter');
-        Route::post('/inventory/restock', [StaffDashboardController::class, 'restock'])->name('inventory.restock');
-        Route::post('/inventory/request-update', [StaffDashboardController::class, 'requestUpdate'])->name('inventory.request-update');
-    });
+ 
 });
 
 require __DIR__.'/auth.php';

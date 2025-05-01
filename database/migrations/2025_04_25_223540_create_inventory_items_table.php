@@ -14,12 +14,9 @@ return new class extends Migration
         Schema::create('inventory_items', function (Blueprint $table) {
             $table->id();
             $table->string('name')->index();
-            $table->text('description')->nullable();
             $table->integer('quantity')->default(0);
             $table->decimal('price', 8, 2);
-            $table->string('sku')->unique()->nullable();
             $table->string('category')->nullable()->index();
-            $table->string('supplier')->nullable();
             $table->timestamps();
         });
     }
