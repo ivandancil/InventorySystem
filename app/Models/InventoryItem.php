@@ -20,6 +20,8 @@ class InventoryItem extends Model
         'quantity',
         'price',
         'category',
+        'restocked',
+        'needs_update',
     ];
 
     /**

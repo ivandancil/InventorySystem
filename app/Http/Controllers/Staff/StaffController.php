@@ -4,27 +4,64 @@ namespace App\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use App\Models\InventoryItem;
+use App\Models\InventoryAction;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class StaffController extends Controller
 {
         public function index(Request $request)
-    {
-        $query = InventoryItem::query();
+        {
+            $query = InventoryItem::query();
 
-          // Search by name or category
-    if ($request->has('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', '%' . $search . '%')
-              ->orWhere('category', 'like', '%' . $search . '%');
-        });
-    }
+            // Search by name or category
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                ->orWhere('category', 'like', '%' . $search . '%');
+            });
+        }
 
-        $products = $query->paginate(10);
-        return view('staff.dashboard', compact('products'));
-    }
+            $products = $query->paginate(10);
+            return view('staff.dashboard', compact('products'));
+        }
 
-    
+        public function markRestocked(Request $request, $id)
+        {
+            InventoryAction::create([
+                'inventory_item_id' => $id,
+                'user_id' => Auth::id(),
+                'action_type' => 'restocked',
+                'notes' => $request->notes,
+            ]);
+        
+            return redirect()->route('staff.dashboard')->with('success', 'Product marked as restocked.');
+
+        }
+        
+        public function requestUpdate(Request $request, $id)
+        {
+            InventoryAction::create([
+                'inventory_item_id' => $id,
+                'user_id' => Auth::id(),
+                'action_type' => 'request_update',
+                'notes' => $request->notes,
+            ]);
+        
+            return redirect()->route('staff.dashboard')->with('success', 'Update request submitted.');
+        }
+        
+        public function showRestockForm($id)
+        {
+            $product = InventoryItem::findOrFail($id);
+            return view('staff.restock', compact('product'));
+        }
+        
+        public function showUpdateForm($id)
+        {
+            $product = InventoryItem::findOrFail($id);
+            return view('staff.update', compact('product'));
+        }
 
 }

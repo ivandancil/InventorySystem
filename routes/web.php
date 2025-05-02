@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Staff\StaffController;
+use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\InventoryActionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{inventoryItem}/edit', [InventoryController::class, 'edit'])->name('edit'); // For displaying the edit form
             Route::put('/{inventoryItem}', [InventoryController::class, 'update'])->name('update'); // For handling the update
             Route::delete('/{inventoryItem}', [InventoryController::class, 'destroy'])->name('destroy'); // The new delete route
+            Route::get('/inventory-actions', [InventoryActionController::class, 'index'])->name('inventoryActions');
         });
 
         // Add other admin-related routes here
@@ -39,6 +41,11 @@ Route::middleware('auth')->group(function () {
      Route::prefix('staff')->name('staff.')->middleware(['auth', 'role:staff'])->group(function () {
         Route::get('/dashboard', [StaffController::class, 'index'])->name('dashboard');
 
+        Route::get('/dashboard/restock/{id}', [StaffController::class, 'showRestockForm'])->name('showRestockForm');
+        Route::get('/dashboard/request-update/{id}', [StaffController::class, 'showUpdateForm'])->name('showUpdateForm');
+
+        Route::post('/dashboard/{id}/restock', [StaffController::class, 'markRestocked'])->name('markRestocked');
+        Route::post('/dashboard/{id}/request-update', [StaffController::class, 'requestUpdate'])->name('requestUpdate');
         
 
     });

@@ -5,6 +5,17 @@
         </h2>
     </x-slot>
 
+      <!-- ✅ Notification -->
+      @if (session('success'))
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+    </div>
+    @endif
+
+
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -20,11 +31,11 @@
                         class="border-gray-300 focus:ring focus:ring-indigo-200 focus:border-indigo-400 rounded-md shadow-sm px-4 py-2 w-72"
                     >
                     <button
-    type="submit"
-    class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-900 text-black font-semibold rounded-md shadow-sm transition-all duration-150 ease-in-out"
->
-    Search
-</button>
+                        type="submit"
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-900 text-black font-semibold rounded-md shadow-sm transition-all duration-150 ease-in-out"
+                    >
+                        Search
+                    </button>
 
 
                 </form>
@@ -39,6 +50,7 @@
                             <th class="px-4 py-2">Category</th>
                             <th class="px-4 py-2">Quantity</th>
                             <th class="px-4 py-2">Price</th>
+                            <th class="px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,9 +58,30 @@
                             <tr class="border-t">
                                 <td class="px-4 py-2">{{ $product->name }}</td>
                                 <td class="px-4 py-2">{{ $product->category }}</td>
-                                <td class="px-4 py-2">{{ $product->quantity }}</td>
+                                <td class="px-4 py-2">
+                                    {{ $product->quantity }}
+
+                                    @if ($product->restocked)
+                                        <span class="ml-2 inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded">Restocked</span>
+                                    @endif
+
+                                    @if ($product->needs_update)
+                                        <span class="ml-2 inline-block px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Update Requested</span>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-2">{{ $product->price }}</td>
-                            </tr>
+                                    <td class="px-4 py-2 space-x-2">
+                                        <a href="{{ route('staff.showRestockForm', $product->id) }}"
+                                        class="bg-green-500 hover:bg-green-600 text-black px-3 py-1 rounded text-sm">
+                                            Mark Restocked
+                                        </a>
+
+                                        <a href="{{ route('staff.showUpdateForm', $product->id) }}"
+                                        class="bg-yellow-500 hover:bg-yellow-600 text-black px-3 py-1 rounded text-sm">
+                                            Request Update
+                                        </a>
+                                    </td>
+                                </tr>
                         @empty
                             <tr>
                                 <td colspan="3" class="px-4 py-2 text-center text-gray-500">No products found.</td>
