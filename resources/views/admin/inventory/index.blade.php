@@ -16,6 +16,12 @@
                             {{ __('Create New Inventory Item') }}
                         </a>
                     </div>
+                    <div class="mb-4">
+                    <a href="{{ route('admin.inventory.inventoryActions') }}"  class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-900 active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-500 disabled:opacity-25 transition ease-in-out duration-150">
+    {{ __('View Inventory Actions') }}
+</a>
+
+                    </div>
 
                     @if ($inventoryItems->isEmpty())
                         <p>{{ __('No inventory items found.') }}</p>
@@ -47,7 +53,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->category ?? '-' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->quantity }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->price, 2) }}</td>
+                                         <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->price, 2) }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <a href="{{ route('admin.inventory.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900">
                                                     <x-secondary-button>
