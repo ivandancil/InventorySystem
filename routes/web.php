@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Staff\StaffController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,7 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
         // Admin Dashboard Route
-        Route::prefix('admin')->name('admin.')->group(function () {
+        Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
         Route::prefix('inventory')->name('inventory.')->group(function () {
@@ -35,6 +35,13 @@ Route::middleware('auth')->group(function () {
         // Add other admin-related routes here
     });
 
+     // Staff Dashboard Route
+     Route::prefix('staff')->name('staff.')->middleware(['auth', 'role:staff'])->group(function () {
+        Route::get('/dashboard', [StaffController::class, 'index'])->name('dashboard');
+
+        
+
+    });
  
 });
 
