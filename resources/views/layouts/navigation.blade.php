@@ -18,7 +18,7 @@
                         </x-nav-link>
                     @elseif(Auth::user()->role === 'staff')
                         <x-nav-link href="{{ route('staff.dashboard') }}">
-                            {{ __('View Inventory') }}
+                            {{ __('Product Stock Management') }}
                         </x-nav-link>
                     @endif
                 </div>

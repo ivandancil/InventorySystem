@@ -12,6 +12,10 @@ class AdminController extends Controller
         $totalProducts = InventoryItem::count();
         $totalStock = InventoryItem::sum('quantity');
 
-        return view('admin.dashboard', compact('totalProducts', 'totalStock'));
+         // For the chart
+    $productNames = InventoryItem::pluck('name');
+    $stockCounts = InventoryItem::pluck('quantity');
+
+        return view('admin.dashboard', compact('totalProducts', 'totalStock', 'productNames', 'stockCounts'));
     }
 }

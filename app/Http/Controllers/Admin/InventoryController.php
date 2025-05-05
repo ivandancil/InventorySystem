@@ -15,9 +15,20 @@ class InventoryController extends Controller
       /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $inventoryItems = InventoryItem::all(); // Retrieve all inventory items
+        // Get the search query from the request
+        $search = $request->input('search');
+        
+        // If a search query exists, filter the inventory items by name
+        if ($search) {
+            $inventoryItems = InventoryItem::where('name', 'like', '%' . $search . '%')
+                ->orWhere('category', 'like', '%' . $search . '%') // Optionally add more columns for search
+                ->get();
+        } else {
+            $inventoryItems = InventoryItem::all(); // Retrieve all inventory items if no search query
+        }
+    
         return view('admin.inventory.index', compact('inventoryItems'));
     }
 
@@ -34,11 +45,20 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'quantity' => ['required', 'integer', 'min:0'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'category' => ['nullable', 'string', 'max:255'],
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:50', // Limit the length to 100 characters (can adjust as needed)
+                'regex:/^[a-zA-Z0-9\s]+$/', // Allow only letters, numbers, and spaces (no special characters)
+                'not_regex:/([a-zA-Z])\1{2,}/', // Prevent excessive repetition of the same character (e.g., "aaa")
+            ],
+            'description' => 'required|string|max:1000|not_regex:/([a-zA-Z])\1{2,}/', // Prevent excessive repetition of the same character (e.g., "aaa")
+            'quantity' => 'required|integer|min:0|max:500', // Limit the quantity to a maximum of 500
+            'price_php' => 'required|numeric|min:0|max:100000', // Price between 0 and 100,000 PHP
+            'category' => 'nullable|string|max:100|',
+            'unit_type' => 'required|string|in:each,box,dozen',
+            'units_per_package' => 'required|integer|min:1|max:100',
         ]);
 
         InventoryItem::create($request->all());
@@ -59,14 +79,23 @@ class InventoryController extends Controller
      */
     public function update(Request $request, InventoryItem $inventoryItem)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'quantity' => ['required', 'integer', 'min:0'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'category' => ['nullable', 'string', 'max:255'],
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:50', // Limit the length to 50 characters (same as store method)
+                'regex:/^[a-zA-Z0-9\s]+$/', // Only letters, numbers, and spaces allowed
+                'not_regex:/([a-zA-Z])\1{2,}/', // Prevent excessive repetition of the same character
+            ],
+            'description' => 'required|string|max:1000|not_regex:/([a-zA-Z])\1{2,}/', // Prevent excessive repetition in descriptions
+            'quantity' => 'required|integer|min:0|max:500', // Limit quantity to 500
+            'price_php' => 'required|numeric|min:0|max:100000', // Price limited to between 0 and 100,000 PHP
+            'category' => 'nullable|string|max:100', // Limit category to 100 characters
+            'unit_type' => 'required|string|in:each,box,dozen', // Restrict unit type
+            'units_per_package' => 'required|integer|min:1|max:100', // Limit units per package to a max of 100
         ]);
 
-        $inventoryItem->update($request->all());
+        $inventoryItem->update($validated); // Directly update with validated data
 
         return Redirect::route('admin.inventory.index')->with('success', 'Inventory item updated successfully.');
     }

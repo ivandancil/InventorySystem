@@ -49,14 +49,17 @@ class AuthTest extends TestCase
     #[Test]
     public function admin_can_access_dashboard()
     {
-        $user = User::factory()->create();
-
+        $user = User::factory()->create([
+            'role' => 'admin', // Make sure the user passes the 'role:admin' middleware
+        ]);
+    
         $this->actingAs($user);
-
+    
         $response = $this->get(route('admin.dashboard'));
-
-        $response->assertStatus(200); // Assuming the route exists and doesn't require a role check
+    
+        $response->assertStatus(200);
     }
+    
 
     #[Test]
     public function guest_cannot_access_admin_dashboard()

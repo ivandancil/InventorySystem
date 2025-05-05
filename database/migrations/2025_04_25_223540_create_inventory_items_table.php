@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('inventory_items', function (Blueprint $table) {
             $table->id();
             $table->string('name')->index();
+            $table->text('description');
             $table->integer('quantity')->default(0);
-            $table->decimal('price', 8, 2);
+            $table->decimal('price_php', 8, 2);
             $table->string('category')->nullable()->index();
+            $table->string('unit_type')->default('each'); // e.g., each, box, dozen
+            $table->integer('units_per_package')->default(1);
             $table->timestamps();
         });
     }
