@@ -17,11 +17,12 @@ class InventoryItem extends Model
      */
     protected $fillable = [
         'name',
+        'description',
         'quantity',
-        'price',
+        'price_php',
         'category',
-        'restocked',
-        'needs_update',
+        'unit_type',
+        'units_per_package',
     ];
 
     /**
