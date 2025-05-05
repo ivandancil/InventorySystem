@@ -12,7 +12,8 @@
                 value="{{ old('name') }}"
                 required
                 autofocus
-                autocomplete="name"
+                autocomplete="off"
+                   placeholder="Enter your name"
                 class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black"
             >
             @error('name')
@@ -29,7 +30,8 @@
                 type="email"
                 value="{{ old('email') }}"
                 required
-                autocomplete="username"
+                autocomplete="off"
+                     placeholder="Enter your email"
                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black"
             >
             @error('email')
@@ -45,7 +47,8 @@
                 name="password"
                 type="password"
                 required
-                autocomplete="new-password"
+                autocomplete="off"
+                placeholder="Enter your password"
                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black"
             >
             @error('password')
@@ -61,7 +64,8 @@
                 name="password_confirmation"
                 type="password"
                 required
-                autocomplete="new-password"
+                autocomplete="off"
+                placeholder="Confirm your password"
                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black"
             >
             @error('password_confirmation')
