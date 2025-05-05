@@ -70,16 +70,16 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($inventoryItems as $item)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
+                                        <td class="px-6 py-3 whitespace-nowrap">{{ $item->name }}</td>
                                         <!-- <td class="px-6 py-4 whitespace-nowrap">{{ $item->description ?? '-' }}</td> -->
-                                        <td class="px-6 py-4 text-center whitespace-nowrap">{{ $item->quantity }}</td>
-                                        <td class="px-6 py-4 text-right whitespace-nowrap">₱{{ number_format($item->price_php, 2) }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->category ?? '-' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->unit_type }}</td>
-                                        <td class="px-6 py-4 text-center whitespace-nowrap">{{ $item->units_per_package }}</td>
+                                        <td class="px-6 py-3 text-center whitespace-nowrap">{{ $item->quantity }}</td>
+                                        <td class="px-6 py-3 text-right whitespace-nowrap">₱{{ number_format($item->price_php, 2) }}</td>
+                                        <td class="px-6 py-3 whitespace-nowrap">{{ $item->category ?? '-' }}</td>
+                                        <td class="px-6 py-3 whitespace-nowrap">{{ $item->unit_type }}</td>
+                                        <td class="px-6 py-3 text-center whitespace-nowrap">{{ $item->units_per_package }}</td>
 
                                         <!-- <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->price, 2) }}</td> -->
-                                        <td class="px-6 py-4 text-center text-sm font-medium">
+                                        <td class="px-6 py-3 text-center text-sm font-medium">
                                             <div class="flex justify-center items-center gap-3">
                                                 <a href="{{ route('admin.inventory.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900">
                                                     <x-secondary-button>

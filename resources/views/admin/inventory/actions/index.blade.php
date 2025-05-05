@@ -35,13 +35,13 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($actions as $action)
-                            <tr class="border-t">
-                                <td class="px-4 py-2">{{ $action->inventoryItem->name }}</td>
-                                <td class="px-4 py-2 capitalize">{{ $action->action_type }}</td>
-                                <td class="px-4 py-2">{{ $action->notes ?? '—' }}</td>
-                                <td class="px-4 py-2">{{ $action->created_at->format('Y-m-d H:i') }}</td>
+                            <tr>
+                                <td class="px-6 py-3 whitespace-nowrap">{{ $action->inventoryItem->name }}</td>
+                                <td class="px-6 py-3 whitespace-nowrap">{{ $action->action_type }}</td>  
+                                <td class="px-6 py-3 whitespace-nowrap">{{ $action->notes ?? '—' }}</td>  
+                                <td class="px-6 py-3 whitespace-nowrap">{{ $action->created_at->format('Y-m-d H:i') }}</td>         
                             </tr>
                         @empty
                             <tr>
