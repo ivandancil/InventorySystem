@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
             Route::put('/{inventoryItem}', [InventoryController::class, 'update'])->name('update'); // For handling the update
             Route::delete('/{inventoryItem}', [InventoryController::class, 'destroy'])->name('destroy'); // The new delete route
             Route::get('/inventory-actions', [InventoryActionController::class, 'index'])->name('inventoryActions');
+            Route::post('/clear-flag/{itemId}/{type}', [InventoryActionController::class, 'clearFlag'])->name('clearFlag');
+
         });
 
         // Add other admin-related routes here

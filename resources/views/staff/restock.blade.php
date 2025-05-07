@@ -10,8 +10,10 @@
                 @csrf
                 <textarea name="notes" placeholder="Optional notes..." class="w-full border rounded p-2 mt-2"></textarea>
                 <div class="mt-4 flex justify-end space-x-2">
-                    <a href="{{ route('staff.dashboard') }}" class="px-4 py-2 bg-gray-300 rounded">Cancel</a>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-black rounded">Confirm</button>
+                    <a href="{{ route('staff.dashboard') }}"  class="ml-4 inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-500 disabled:opacity-25 transition ease-in-out duration-150">Cancel</a>
+                    <x-primary-button class="ms-4">
+                                {{ __('Confirm') }}
+                    </x-primary-button>
                 </div>
             </form>
         </div>

@@ -17,14 +17,16 @@ class InventoryItemTest extends TestCase
         $item = InventoryItem::create([
             'name' => 'Test Product',
             'quantity' => 10,
-            'price' => 99.99,
+            'price_php' => 99.99, // use correct column
             'category' => 'Electronics',
+            'description' => 'Test description'
         ]);
-
+    
         $this->assertDatabaseHas('inventory_items', ['name' => 'Test Product']);
         $this->assertEquals(10, $item->quantity);
-        $this->assertEquals(99.99, $item->price);
+        $this->assertEquals(99.99, $item->price_php); // updated here too
     }
+    
 
     #[Test]
     public function it_can_view_all_inventory_items()
@@ -51,18 +53,20 @@ class InventoryItemTest extends TestCase
         $item = InventoryItem::factory()->create([
             'name' => 'Old Name',
             'quantity' => 5,
-            'price' => 10.00,
+            'price_php' => 10.00,
+            'description' => 'Old description',
         ]);
 
         $item->update([
             'name' => 'Updated Name',
             'quantity' => 20,
-            'price' => 15.50,
+            'price_php' => 15.50,
         ]);
 
         $this->assertEquals('Updated Name', $item->fresh()->name);
         $this->assertEquals(20, $item->fresh()->quantity);
-        $this->assertEquals(15.50, $item->fresh()->price);
+        $this->assertEquals(15.50, $item->fresh()->price_php);
+
     }
 
     #[Test]
