@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('inventory_items', function (Blueprint $table) {
-            // $table->boolean('restocked')->default(false);
-            // $table->boolean('needs_update')->default(false);
+            if (!Schema::hasColumn('inventory_items', 'restocked')) {
+                $table->boolean('restocked')->default(false);
+            }
+            if (!Schema::hasColumn('inventory_items', 'needs_update')) {
+                $table->boolean('needs_update')->default(false);
+            }
         });
     }
 
@@ -23,7 +27,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('inventory_items', function (Blueprint $table) {
-            //  $table->dropColumn(['restocked', 'needs_update']);
+            if (Schema::hasColumn('inventory_items', 'restocked')) {
+                $table->dropColumn('restocked');
+            }
+            if (Schema::hasColumn('inventory_items', 'needs_update')) {
+                $table->dropColumn('needs_update');
+            }
         });
     }
 };

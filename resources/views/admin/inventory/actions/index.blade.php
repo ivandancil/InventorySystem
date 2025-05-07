@@ -33,22 +33,39 @@
                             <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 {{ __('Date') }}
                             </th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                                {{ __('Admin Tools') }}
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($actions as $action)
                             <tr>
                                 <td class="px-6 py-3 whitespace-nowrap">{{ $action->inventoryItem->name }}</td>
-                                <td class="px-6 py-3 whitespace-nowrap">{{ $action->action_type }}</td>  
+                                <td class="px-6 py-3 whitespace-nowrap capitalize">{{ str_replace('_', ' ', $action->action_type) }}</td>  
                                 <td class="px-6 py-3 whitespace-nowrap">{{ $action->notes ?? '—' }}</td>  
-                                <td class="px-6 py-3 whitespace-nowrap">{{ $action->created_at->format('Y-m-d H:i') }}</td>         
+                                <td class="px-6 py-3 whitespace-nowrap">{{ $action->created_at->format('Y-m-d H:i') }}</td> 
+
+                                @if (in_array($action->action_type, ['restocked', 'request_update']))
+                                    <td class="px-6 py-3 whitespace-nowrap">
+                                        <form action="{{ route('admin.inventory.clearFlag', ['itemId' => $action->inventory_item_id, 'type' => $action->action_type]) }}" method="POST" onsubmit="return confirm('Clear this flag?')">
+                                            @csrf
+                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">
+                                                Clear Flag
+                                            </button>
+                                        </form>
+                                    </td>
+                                @else
+                                    <td class="px-6 py-3 whitespace-nowrap text-gray-400">—</td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-gray-500 py-4">No actions found.</td>
+                                <td colspan="5" class="text-center text-gray-500 py-4">No actions found.</td>
                             </tr>
                         @endforelse
                     </tbody>
+
                 </table>
 
                 <div class="mt-4">

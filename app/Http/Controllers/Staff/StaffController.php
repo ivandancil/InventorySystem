@@ -29,28 +29,45 @@ class StaffController extends Controller
 
         public function markRestocked(Request $request, $id)
         {
+            // Find the product
+            $product = InventoryItem::findOrFail($id);
+            
+            // Update the product's status
+            $product->restocked = true;  // Set as restocked
+            $product->save();
+
+            // Log the action
             InventoryAction::create([
                 'inventory_item_id' => $id,
                 'user_id' => Auth::id(),
                 'action_type' => 'restocked',
                 'notes' => $request->notes,
             ]);
-        
+            
             return redirect()->route('staff.dashboard')->with('success', 'Product marked as restocked.');
-
         }
-        
+
+
         public function requestUpdate(Request $request, $id)
         {
+            // Find the product
+            $product = InventoryItem::findOrFail($id);
+            
+            // Update the product's status
+            $product->needs_update = true;  // Mark as needing update
+            $product->save();
+
+            // Log the action
             InventoryAction::create([
                 'inventory_item_id' => $id,
                 'user_id' => Auth::id(),
                 'action_type' => 'request_update',
                 'notes' => $request->notes,
             ]);
-        
+
             return redirect()->route('staff.dashboard')->with('success', 'Update request submitted.');
         }
+
         
         public function showRestockForm($id)
         {
