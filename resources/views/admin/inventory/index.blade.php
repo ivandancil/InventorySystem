@@ -17,12 +17,9 @@
                             <i class="fas fa-arrow-left mr-2"></i> {{ __('Back to Dashboard') }}
                         </a>
 
-                        <!-- Search Bar -->
+                        <!-- Live Search Bar -->
                         <form method="GET" action="{{ route('admin.inventory.index') }}" class="inline-flex items-center space-x-2 mb-4 sm:mb-0">
-                            <input type="text" name="search" value="{{ request()->query('search') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Search inventory..." autocomplete="off" />
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <i class="fas fa-search"></i> {{ __('Search') }}
-                            </button>
+                            <input type="text" name="search" id="live-search-input" value="{{ request()->query('search') }}" class="px-4 py-2 border border-gray-500 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Search inventory..." autocomplete="off" />
                         </form>
                     </div>
 
@@ -67,7 +64,7 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody id="inventory-table-body"  class="bg-white divide-y divide-gray-200">
                                 @foreach ($inventoryItems as $item)
                                     <tr>
                                         <td class="px-6 py-3 whitespace-nowrap">{{ $item->name }}</td>
@@ -81,6 +78,12 @@
                                         <!-- <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->price, 2) }}</td> -->
                                         <td class="px-6 py-3 text-center text-sm font-medium">
                                             <div class="flex justify-center items-center gap-3">
+                                                 <a href="{{ route('admin.inventory.adjust', $item->id) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                    <x-secondary-button>
+                                                        <i class="fas fa-cogs mr-1"></i> {{ __('Adjust') }}
+                                                    </x-secondary-button>
+                                                </a>
+
                                                 <a href="{{ route('admin.inventory.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900">
                                                     <x-secondary-button>
                                                         <i class="fas fa-edit mr-1"></i> {{ __('Edit') }}
@@ -105,4 +108,61 @@
             </div>
         </div>
     </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.getElementById('live-search-input').addEventListener('input', function () {
+        const query = this.value.trim();
+
+        fetch(`/admin/inventory/live-search?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('inventory-table-body');
+                tbody.innerHTML = ''; // Clear existing rows
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4">No inventory items found.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(item => {
+                    const row = `
+                        <tr>
+                            <td class="px-6 py-3 whitespace-nowrap">${item.name}</td>
+                            <td class="px-6 py-3 text-center whitespace-nowrap">${item.quantity}</td>
+                            <td class="px-6 py-3 text-right whitespace-nowrap">₱${parseFloat(item.price_php).toFixed(2)}</td>
+                            <td class="px-6 py-3 whitespace-nowrap">${item.category ?? '-'}</td>
+                            <td class="px-6 py-3 whitespace-nowrap">${item.unit_type}</td>
+                            <td class="px-6 py-3 text-center whitespace-nowrap">${item.units_per_package}</td>
+                            <td class="text-center">
+                                <div class="flex justify-center items-center gap-3">
+                                    <a href="/admin/inventory/${item.id}/adjust" class="text-indigo-600 hover:text-indigo-900">
+                                        <x-secondary-button><i class="fas fa-cogs mr-1"></i> Adjust</x-secondary-button>
+                                    </a>
+                                    <a href="/admin/inventory/${item.id}/edit" class="text-indigo-600 hover:text-indigo-900">
+                                        <x-secondary-button><i class="fas fa-edit mr-1"></i> Edit</x-secondary-button>
+                                    </a>
+                                    <form method="POST" action="/admin/inventory/${item.id}" onsubmit="return confirm('Are you sure you want to delete this item?');" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-danger-button type="submit"><i class="fas fa-trash mr-1"></i> Delete</x-danger-button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            });
+    });
+</script>
+
+
 </x-app-layout>
+
+
+
+
+
+
+

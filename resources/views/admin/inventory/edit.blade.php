@@ -45,7 +45,7 @@
 
                         {{-- Quantity --}}
                         <div class="mb-5">
-                            <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+                            <label for="quantity" class="block font-medium text-sm text-gray-700">Quantity</label>
                             <input
                                 id="quantity"
                                 name="quantity"
