@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Staff\StaffController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\InventoryAdjustmentController;
 use App\Http\Controllers\Admin\InventoryActionController;
 
 Route::get('/', function () {
@@ -33,7 +34,13 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{inventoryItem}', [InventoryController::class, 'destroy'])->name('destroy'); // The new delete route
             Route::get('/inventory-actions', [InventoryActionController::class, 'index'])->name('inventoryActions');
             Route::post('/clear-flag/{itemId}/{type}', [InventoryActionController::class, 'clearFlag'])->name('clearFlag');
+            Route::get('/live-search', [InventoryController::class, 'liveSearch'])->name('liveSearch');
 
+
+
+              Route::get('/{inventoryItem}/adjust', [InventoryAdjustmentController::class, 'create'])->name('adjust');
+            Route::post('/{inventoryItem}/adjust', [InventoryAdjustmentController::class, 'store'])
+                 ->name('inventory.adjust');
         });
 
         // Add other admin-related routes here
@@ -48,6 +55,8 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/dashboard/{id}/restock', [StaffController::class, 'markRestocked'])->name('markRestocked');
         Route::post('/dashboard/{id}/request-update', [StaffController::class, 'requestUpdate'])->name('requestUpdate');
+       Route::get('/dashboard/live-search', [StaffController::class, 'liveSearch'])->name('dashboard.liveSearch');
+
         
 
     });

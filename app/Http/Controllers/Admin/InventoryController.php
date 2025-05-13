@@ -108,4 +108,18 @@ class InventoryController extends Controller
         $inventoryItem->delete();
         return Redirect::route('admin.inventory.index')->with('success', 'Inventory item deleted successfully.');
     }
+
+
+        public function liveSearch(Request $request)
+        {
+            $query = $request->input('query');
+
+            $results = InventoryItem::where('name', 'like', '%' . $query . '%')
+                ->orWhere('category', 'like', '%' . $query . '%')
+                ->get();
+
+            return response()->json($results);
+        }
+
+
 }

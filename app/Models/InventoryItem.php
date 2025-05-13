@@ -34,6 +34,14 @@ class InventoryItem extends Model
         'price' => 'decimal:2', // Cast the price to a decimal with 2 decimal places
         'quantity' => 'integer', // Cast quantity to an integer
     ];
+    
+      /**
+     * Relationship with InventoryAdjustment
+     */
+    public function adjustments()
+    {
+        return $this->hasMany(InventoryAdjustment::class);
+    }
 
      /**
      * Safely decrement the stock quantity without going negative.
@@ -49,6 +57,26 @@ class InventoryItem extends Model
         } else {
             $this->$column = 0;
             $this->save();
+        }
+    }
+
+     /**
+     * Adjust stock by adding or deducting quantity.
+     */
+    public function adjustStock(int $quantity, string $type, float $price_php)
+    {
+        // Create the adjustment record
+        $adjustment = $this->adjustments()->create([
+            'quantity' => $quantity,
+            'price_php' => $price_php,
+            'type' => $type, // 'restock' or 'deduct'
+        ]);
+
+        // Adjust the inventory quantity
+        if ($type === 'restock') {
+            $this->increment('quantity', $quantity);
+        } elseif ($type === 'deduct') {
+            $this->safeDecrement('quantity', $quantity);
         }
     }
 

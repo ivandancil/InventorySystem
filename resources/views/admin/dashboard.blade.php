@@ -42,6 +42,13 @@
                             <canvas id="stockChart" height="120"></canvas>
                         </div>
 
+                    <!-- Monthly Sales Line Graph -->
+                    <div class="w-full bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                            <i class="fas fa-chart-line text-green-500"></i> Monthly Sales
+                        </h3>
+                        <canvas id="salesLineChart" height="120"></canvas>
+                    </div>
 
                         <!-- Quick Actions -->
                         <div class="w-full lg:w-1/3 bg-white rounded-lg shadow-md p-6">
@@ -109,4 +116,41 @@
                 }
             });
         </script>
+
+        <script>
+    const salesCtx = document.getElementById('salesLineChart').getContext('2d');
+    const salesLineChart = new Chart(salesCtx, {
+        type: 'line',
+        data: {
+            labels: [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ],
+            datasets: [{
+                label: 'Monthly Sales (₱)',
+                data: {!! json_encode($fullMonthlySales) !!},
+                fill: false,
+                borderColor: 'rgba(34, 197, 94, 1)', // Tailwind green-500
+                backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                tension: 0.3,
+                pointBackgroundColor: 'rgba(34, 197, 94, 1)',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₱' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
     </x-app-layout>

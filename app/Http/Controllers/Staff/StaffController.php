@@ -81,4 +81,19 @@ class StaffController extends Controller
             return view('staff.update', compact('product'));
         }
 
+
+                public function liveSearch(Request $request)
+        {
+            $search = $request->input('search');
+
+            // Fetch inventory items matching the search query (you can also add more conditions for filtering)
+            $inventoryItems = InventoryItem::where('name', 'like', '%' . $search . '%')
+                ->orWhere('category', 'like', '%' . $search . '%') // You can add more columns if necessary
+                ->get();
+
+            // Return a view or JSON with the filtered items
+            return response()->json($inventoryItems); // You can send data to be used on the frontend
+        }
+
+
 }

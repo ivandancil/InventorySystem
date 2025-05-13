@@ -20,11 +20,10 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
             <div class="flex justify-end">
-                <form method="GET" action="{{ route('staff.dashboard') }}" class="flex items-center space-x-2">
-                     <input type="text" name="search" value="{{ request()->query('search') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-black" placeholder="Search inventory..." autocomplete="off" />
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <i class="fas fa-search"></i> {{ __('Search') }}
-                        </button>
+
+              <!-- Live Search Bar -->
+                <form method="GET" action="{{  route('staff.dashboard.liveSearch') }}" class="flex items-center space-x-2">
+                      <input type="text" name="search" id="live-search-input" value="{{ request()->query('search') }}" class="px-4 py-2 border border-gray-500 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Search inventory..." autocomplete="off" />
                 </form>
             </div>
 
@@ -54,7 +53,7 @@
                             </th>                           
                         </tr>
                     </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody id="inventory-table-body" class="bg-white divide-y divide-gray-200">
             @forelse ($products as $product)
                 <tr class="border-t">
                     <td class="px-4 py-3">{{ $product->name }}</td>
@@ -104,4 +103,44 @@
             </div>
         </div>
     </div>
+
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.querySelector('input[name="search"]');
+        
+        // Listen for the input event on the search box
+        searchInput.addEventListener('input', function () {
+            const searchValue = searchInput.value;
+
+            // Make AJAX request to live-search route
+            fetch(`/staff/dashboard/live-search?search=${searchValue}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the data (filtered items)
+                    const tableBody = document.querySelector('table tbody');
+                    tableBody.innerHTML = ''; // Clear current table rows
+
+                    // Iterate over the filtered inventory items and append to the table
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-3 whitespace-nowrap">${item.name}</td>
+                            <td class="px-6 py-3 text-center whitespace-nowrap">${item.quantity}</td>
+                            <td class="px-6 py-3 text-right whitespace-nowrap">₱${item.price_php}</td>
+                            <td class="px-6 py-3 whitespace-nowrap">${item.category ?? '-'}</td>
+                            <td class="px-6 py-3 whitespace-nowrap">${item.unit_type}</td>
+                            <td class="px-6 py-3 text-center whitespace-nowrap">${item.units_per_package}</td>
+                            <td class="px-6 py-3 text-center text-sm font-medium">
+                           
+                            
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                });
+        });
+    });
+</script>
+
+
 </x-app-layout>
