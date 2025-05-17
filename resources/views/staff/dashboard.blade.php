@@ -68,7 +68,7 @@
                                         <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded">Restock Requested</span>
                                     @endif
                                     @if ($hasUpdateRequest)
-                                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">Update Requested</span>
+                                        <span class="mt-1 inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">Update Requested</span>
                                     @endif
                                 </div>
                             </td>

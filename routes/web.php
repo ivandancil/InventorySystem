@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{inventoryItem}', [InventoryController::class, 'destroy'])->name('destroy'); // The new delete route
             Route::get('/inventory-actions', [InventoryActionController::class, 'index'])->name('inventoryActions');
             Route::post('/inventory-actions/{item}/approve/{type}', [InventoryActionController::class, 'approved'])->name('inventoryActions.approve');
+            Route::post('/inventory-actions/{item}/reject/{type}', [InventoryActionController::class, 'reject'])->name('inventoryActions.reject'); // Reject route
             Route::get('/live-search', [InventoryController::class, 'liveSearch'])->name('liveSearch');
 
 

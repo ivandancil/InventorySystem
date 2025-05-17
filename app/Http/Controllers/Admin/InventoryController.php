@@ -15,22 +15,20 @@ class InventoryController extends Controller
       /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        // Get the search query from the request
-        $search = $request->input('search');
-        
-        // If a search query exists, filter the inventory items by name
-        if ($search) {
-            $inventoryItems = InventoryItem::where('name', 'like', '%' . $search . '%')
-                ->orWhere('category', 'like', '%' . $search . '%') // Optionally add more columns for search
-                ->get();
-        } else {
-            $inventoryItems = InventoryItem::all(); // Retrieve all inventory items if no search query
-        }
-    
-        return view('admin.inventory.index', compact('inventoryItems'));
-    }
+   public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $inventoryItems = InventoryItem::query()
+        ->when($search, function ($query) use ($search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('category', 'like', '%' . $search . '%');
+        })
+        ->withCount(['pendingRestockRequests', 'pendingUpdateRequests'])// 👈 Add this
+        ->get();
+
+    return view('admin.inventory.index', compact('inventoryItems'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -121,5 +119,6 @@ class InventoryController extends Controller
             return response()->json($results);
         }
 
+        
 
 }

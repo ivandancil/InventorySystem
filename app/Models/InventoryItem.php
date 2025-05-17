@@ -94,11 +94,23 @@ class InventoryItem extends Model
             }
         }
 
-        public function inventoryActions()
+                public function inventoryActions()
+        {
+            return $this->hasMany(InventoryAction::class);
+        }
+
+        public function pendingRestockRequests()
+        {
+            return $this->hasMany(InventoryAction::class)
+                        ->where('action_type', 'restocked')
+                        ->where('status', 'pending');
+        }
+
+        public function pendingUpdateRequests()
 {
-    return $this->hasMany(InventoryAction::class);
+    return $this->hasMany(InventoryAction::class)
+                ->where('action_type', 'request_update') // assuming 'type' differentiates update from restock
+                ->where('status', 'pending');
 }
-
-
 
 }
