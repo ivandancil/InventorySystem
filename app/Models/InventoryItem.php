@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\InventoryAction;
 use App\Models\InventoryAdjustment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -61,23 +62,43 @@ class InventoryItem extends Model
     }
 
      /**
-     * Adjust stock by adding or deducting quantity.
+     * Adjust stock based on quantity, type, and price.
+     *
+     * @param  int  $quantity
+     * @param  string  $type
+     * @param  float  $price
+     * @param  string|null  $reason
+     * @return void
      */
-    public function adjustStock(int $quantity, string $type, float $price_php)
-    {
-        // Create the adjustment record
-        $adjustment = $this->adjustments()->create([
-            'quantity' => $quantity,
-            'price_php' => $price_php,
-            'type' => $type, // 'restock' or 'deduct'
-        ]);
+        public function adjustStock(int $quantity, string $type, float $price_php)
+        {
+            // Create the adjustment record
+            $adjustment = $this->adjustments()->create([
+                'quantity' => $quantity,
+                'price_php' => $price_php,
+                'type' => $type, // 'restock', 'deduct', or 'damage-return'
+            ]);
 
-        // Adjust the inventory quantity
-        if ($type === 'restock') {
-            $this->increment('quantity', $quantity);
-        } elseif ($type === 'deduct') {
-            $this->safeDecrement('quantity', $quantity);
+            // Adjust the inventory quantity based on the adjustment type
+            if ($type === 'restock') {
+                $this->increment('quantity', $quantity);
+            } elseif ($type === 'deduct') {
+                $this->safeDecrement('quantity', $quantity);
+            } elseif ($type === 'damage-return') {
+                // Mark the item as damaged
+                $this->status = 'damaged';
+                $this->save();
+
+                // Deduct the quantity of damaged stock
+                $this->safeDecrement('quantity', $quantity);
+            }
         }
-    }
+
+        public function inventoryActions()
+{
+    return $this->hasMany(InventoryAction::class);
+}
+
+
 
 }

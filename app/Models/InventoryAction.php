@@ -11,10 +11,12 @@ class InventoryAction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'inventory_item_id', // 👈 Add this
+       'inventory_item_id',
         'user_id',
         'action_type',
+        'status',
         'notes',
+        'quantity',
     ];
 
     public function inventoryItem()

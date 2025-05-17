@@ -30,10 +30,16 @@
                     <div class="mb-4">
                         <label for="type" class="block font-medium text-sm text-gray-700">{{ __('Type') }}</label>
                         <select id="type" name="type" class="mt-1 block w-full h-12 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 sm:text-sm" required>
-                            <option value="restock">{{ __('Restock') }}</option>
-                            <option value="deduct">{{ __('Deduct') }}</option>
+                           
+                             <option value="damage-return">{{ __('Damage Return') }}</option> 
                         </select>
                     </div>
+
+                       {{-- Return Reason Field (Hidden by Default) --}}
+                        <div id="return_reason_container" class="mb-4" style="display: none;">
+                            <label for="return_reason" class="block font-medium text-sm text-gray-700">{{ __('Return Reason') }}</label>
+                            <textarea id="return_reason" name="return_reason" rows="3" class="mt-1 block w-full h-24 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 sm:text-sm"></textarea>
+                        </div>
 
                      <div class="flex items-center justify-end mt-4">
                      <x-primary-button class="ms-4">
@@ -47,4 +53,26 @@
             </div>
         </div>
     </div>
+
+     <script>
+        // JavaScript to toggle the visibility of the "return_reason" field
+        document.addEventListener('DOMContentLoaded', function () {
+            const typeSelect = document.getElementById('type');
+            const returnReasonContainer = document.getElementById('return_reason_container');
+
+            // Check if "damage-return" is selected initially
+            if (typeSelect.value === 'damage-return') {
+                returnReasonContainer.style.display = 'block';
+            }
+
+            // Show/hide the "return_reason" field based on the dropdown selection
+            typeSelect.addEventListener('change', function () {
+                if (typeSelect.value === 'damage-return') {
+                    returnReasonContainer.style.display = 'block';
+                } else {
+                    returnReasonContainer.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </x-app-layout>
