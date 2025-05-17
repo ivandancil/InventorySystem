@@ -42,16 +42,10 @@
                             <canvas id="stockChart" height="120"></canvas>
                         </div>
 
-                    <!-- Monthly Sales Line Graph -->
-                    <div class="w-full bg-white rounded-lg shadow-md p-6">
-                        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                            <i class="fas fa-chart-line text-green-500"></i> Monthly Sales
-                        </h3>
-                        <canvas id="salesLineChart" height="120"></canvas>
-                    </div>
+                   
 
-                        <!-- Quick Actions -->
-                        <div class="w-full lg:w-1/3 bg-white rounded-lg shadow-md p-6">
+                      <!-- Quick Actions -->
+                      <div class="w-full lg:w-1/3 bg-white rounded-lg shadow-md p-6">
                             <h3 class="text-lg font-semibold text-gray-800  flex items-center gap-2">
                                 <i class="fas fa-bolt text-yellow-500"></i> Quick Actions
                             </h3>
@@ -74,12 +68,26 @@
                             </div>
                         </div>
 
-
                     </div>
 
                 </div>
             </div>
-        </div>
+
+            <div class="pt-6">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+
+                     <!-- Monthly Sales Line Graph -->
+                    <div class="w-full bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                            <i class="fas fa-chart-line text-green-500"></i> Monthly Sales
+                        </h3>
+                        <canvas id="salesLineChart" height="120"></canvas>
+                    </div>
+                  
+                    </div>
+                </div>
+            </div>
 
         {{-- Chart.js CDN --}}
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

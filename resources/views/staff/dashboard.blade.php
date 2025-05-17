@@ -53,48 +53,56 @@
                             </th>                           
                         </tr>
                     </thead>
-        <tbody id="inventory-table-body" class="bg-white divide-y divide-gray-200">
-            @forelse ($products as $product)
-                <tr class="border-t">
-                    <td class="px-4 py-3">{{ $product->name }}</td>
-                    <!-- <td class="px-4 py-3 text-center whitespace-nowrap">{{ $product->quantity }}</td> -->
-                    <td class="px-4 py-2">
-                        {{ $product->quantity }}
+                <tbody id="inventory-table-body" class="bg-white divide-y divide-gray-200">
+                    @foreach ($products as $product)
+                        @php
+                            $hasApprovedRestock = $product->inventoryActions->where('action_type', 'restocked')->where('status', 'approved')->isNotEmpty();
+                            $hasPendingRestock = $product->inventoryActions->where('action_type', 'restocked')->where('status', 'pending')->isNotEmpty();
+                            $hasUpdateRequest = $product->inventoryActions->where('action_type', 'request_update')->isNotEmpty();
+                        @endphp
+                        <tr class="border-t">
+                        <td class="px-4 py-3">
+                                {{ $product->name }}
+                                <div class="mt-1 space-x-1">
+                                    @if ($hasPendingRestock)
+                                        <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded">Restock Requested</span>
+                                    @endif
+                                    @if ($hasUpdateRequest)
+                                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">Update Requested</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-4 py-2 text-center">
+                              @php
+        $approvedRestocks = $product->inventoryActions
+            ->where('action_type', 'restocked')
+            ->where('status', 'approved')
+            ->sum('quantity');
+    @endphp
 
-                        @if ($product->restocked)
-                            <span class="ml-2 inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded">Restocked</span>
-                        @endif
+                                {{ $approvedRestocks }} {{-- Will be 0 if no approved restocks --}}
+                            </td>
+                            <td class="px-6 py-3 text-center whitespace-nowrap">₱{{ $product->price_php }}</td>
+                            <td class="px-4 py-3">{{ $product->category }}</td>
+                            <td class="px-6 py-3 whitespace-nowrap">{{ $product->unit_type }}</td>
+                            <td class="px-6 py-3 text-center whitespace-nowrap">{{ $product->units_per_package }}</td>
+                            <td class="px-6 py-3 text-center text-sm font-medium">
+                                <div class="flex justify-center items-center gap-2">
+                                    <a href="{{ route('staff.showRestockForm', $product->id) }}"
+                                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm transition duration-150">
+                                        Request Stock
+                                    </a>
 
-                        @if ($product->needs_update)
-                            <span class="ml-2 inline-block px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Update Requested</span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-3 text-center whitespace-nowrap">₱{{ $product->price_php }}</td>
-                    <td class="px-4 py-3">{{ $product->category }}</td>
-                    <td class="px-6 py-3 whitespace-nowrap">{{ $product->unit_type }}</td>
-                    <td class="px-6 py-3 text-center whitespace-nowrap">{{ $product->units_per_package }}</td>
-                    <td class="px-6 py-3 text-center text-sm font-medium">
-                        <div class="flex justify-center items-center gap-2">
-                            <a href="{{ route('staff.showRestockForm', $product->id) }}"
-                                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm transition duration-150">
-                                    Restocked
-                            </a>
+                                    <a href="{{ route('staff.showUpdateForm', $product->id) }}"
+                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md text-sm transition duration-150">
+                                        Request Update
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
 
-                            <a href="{{ route('staff.showUpdateForm', $product->id) }}"
-                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md text-sm transition duration-150">
-                                    Request Update
-                            </a>
-                        </div>
-                    </td>
-
-
-                </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="px-4 py-2 text-center text-gray-500">No products found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
                 </table>
 
                 <div class="mt-4">
@@ -116,28 +124,29 @@
             // Make AJAX request to live-search route
             fetch(`/staff/dashboard/live-search?search=${searchValue}`)
                 .then(response => response.json())
-                .then(data => {
-                    // Handle the data (filtered items)
-                    const tableBody = document.querySelector('table tbody');
-                    tableBody.innerHTML = ''; // Clear current table rows
+               .then(data => {
+    const tableBody = document.querySelector('table tbody');
+    tableBody.innerHTML = ''; // Clear current table rows
 
-                    // Iterate over the filtered inventory items and append to the table
-                    data.forEach(item => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td class="px-6 py-3 whitespace-nowrap">${item.name}</td>
-                            <td class="px-6 py-3 text-center whitespace-nowrap">${item.quantity}</td>
-                            <td class="px-6 py-3 text-right whitespace-nowrap">₱${item.price_php}</td>
-                            <td class="px-6 py-3 whitespace-nowrap">${item.category ?? '-'}</td>
-                            <td class="px-6 py-3 whitespace-nowrap">${item.unit_type}</td>
-                            <td class="px-6 py-3 text-center whitespace-nowrap">${item.units_per_package}</td>
-                            <td class="px-6 py-3 text-center text-sm font-medium">
-                           
-                            
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                });
+    // Iterate over the filtered inventory items and append to the table
+    data.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="px-6 py-3 whitespace-nowrap">${item.name}</td>
+            <td class="px-6 py-3 text-center whitespace-nowrap">${item.display_quantity}</td>
+            <td class="px-6 py-3 text-right whitespace-nowrap">₱${item.price_php}</td>
+            <td class="px-6 py-3 whitespace-nowrap">${item.category ?? '-'}</td>
+            <td class="px-6 py-3 whitespace-nowrap">${item.unit_type}</td>
+            <td class="px-6 py-3 text-center whitespace-nowrap">${item.units_per_package}</td>
+            <td class="px-6 py-3 text-center text-sm font-medium">
+                <a href="/staff/restock/${item.id}" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm transition duration-150">Restocked</a>
+                <a href="/staff/update-request/${item.id}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md text-sm transition duration-150">Request Update</a>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+});
+
         });
     });
 </script>

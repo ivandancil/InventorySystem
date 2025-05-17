@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
             Route::put('/{inventoryItem}', [InventoryController::class, 'update'])->name('update'); // For handling the update
             Route::delete('/{inventoryItem}', [InventoryController::class, 'destroy'])->name('destroy'); // The new delete route
             Route::get('/inventory-actions', [InventoryActionController::class, 'index'])->name('inventoryActions');
-            Route::post('/clear-flag/{itemId}/{type}', [InventoryActionController::class, 'clearFlag'])->name('clearFlag');
+            Route::post('/inventory-actions/{item}/approve/{type}', [InventoryActionController::class, 'approved'])->name('inventoryActions.approve');
             Route::get('/live-search', [InventoryController::class, 'liveSearch'])->name('liveSearch');
 
 

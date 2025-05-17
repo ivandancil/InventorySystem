@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('inventory_item_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('action_type', ['restocked', 'request_update']);
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+          
             $table->text('notes')->nullable();
             $table->timestamps();
         });

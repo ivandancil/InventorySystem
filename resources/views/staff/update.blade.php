@@ -8,7 +8,7 @@
             <h3 class="text-lg font-semibold mb-2">{{ $product->name }}</h3>
             <form method="POST" action="{{ route('staff.requestUpdate', $product->id) }}">
                 @csrf
-                <textarea name="notes" placeholder="What needs to be updated?" class="w-full border rounded p-2 mt-2"></textarea>
+                <textarea name="notes" placeholder="What needs to be updated?" class="w-full border rounded p-2 mt-2" required></textarea>
                 <div class="mt-4 flex justify-end space-x-2">
                     <a href="{{ route('staff.dashboard') }}" class="px-4 py-2 bg-gray-300 rounded">Cancel</a>
                     <button type="submit" class="px-4 py-2 bg-yellow-500 text-black rounded">Send Request</button>

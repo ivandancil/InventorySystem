@@ -16,18 +16,40 @@ class InventoryActionController extends Controller
         return view('admin.inventory.actions.index', compact('actions'));
     }
 
-    public function clearFlag($itemId, $type)
+    public function approved($itemId, $type)
     {
         $item = InventoryItem::findOrFail($itemId);
 
-        if ($type === 'restocked') {
-            $item->restocked = false;
-        } elseif ($type === 'request_update') {
-            $item->needs_update = false;
+        // Find the latest pending action of that type for the item
+        $action = InventoryAction::where('inventory_item_id', $itemId)
+            ->where('action_type', $type)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
+
+        if (!$action) {
+            return redirect()->back()->with('error', 'No pending action found to confirm.');
         }
 
-        $item->save();
+        if ($type === 'restocked') {
+            // Check if admin has enough stock to fulfill the request
+            if ($item->quantity < $action->quantity) {
+                return redirect()->back()->with('error', 'Not enough stock to approve this request.');
+            }
 
-        return redirect()->back()->with('success', 'Flag cleared successfully.');
+            // Deduct from admin stock
+            $item->quantity -= $action->quantity;
+            $item->save();
+        }
+
+        if ($type === 'request_update') {
+            $item->needs_update = false;
+            $item->save();
+        }
+
+        $action->status = 'approved';
+        $action->save();
+
+        return redirect()->back()->with('success', 'Action confirmed and inventory updated.');
     }
 }

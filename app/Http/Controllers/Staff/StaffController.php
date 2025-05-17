@@ -23,29 +23,46 @@ class StaffController extends Controller
             });
         }
 
-            $products = $query->paginate(10);
-            return view('staff.dashboard', compact('products'));
+         $products = $query->with('inventoryActions')->paginate(10);
+
+
+    return view('staff.dashboard', compact('products'));
         }
 
-        public function markRestocked(Request $request, $id)
-        {
-            // Find the product
-            $product = InventoryItem::findOrFail($id);
-            
-            // Update the product's status
-            $product->restocked = true;  // Set as restocked
-            $product->save();
+     public function markRestocked(Request $request, $id)
+{
+    $product = InventoryItem::findOrFail($id);
 
-            // Log the action
-            InventoryAction::create([
-                'inventory_item_id' => $id,
-                'user_id' => Auth::id(),
-                'action_type' => 'restocked',
-                'notes' => $request->notes,
-            ]);
-            
-            return redirect()->route('staff.dashboard')->with('success', 'Product marked as restocked.');
-        }
+      // Validate the request including max quantity
+    $validated = $request->validate([
+        'notes' => 'nullable|string',
+        'quantity' => [
+            'required',
+            'integer',
+            'min:1',
+            function ($attribute, $value, $fail) use ($product) {
+                if ($value > $product->quantity) {
+                    $fail("Requested quantity exceeds available stock ({$product->quantity}).");
+                }
+            }
+        ],
+    ]);
+
+    // Do not mark it as restocked yet — admin must approve it
+
+    // Log the action
+    InventoryAction::create([
+        'inventory_item_id' => $id,
+        'user_id' => Auth::id(),
+        'action_type' => 'restocked',
+        'status' => 'pending',
+        'notes' => $validated['notes'],
+        'quantity' => $validated['quantity'], // ✅ include quantity here
+    ]);
+
+    return redirect()->route('staff.dashboard')->with('success', 'Restock request submitted to warehouse.');
+}
+
 
 
         public function requestUpdate(Request $request, $id)
@@ -72,7 +89,9 @@ class StaffController extends Controller
         public function showRestockForm($id)
         {
             $product = InventoryItem::findOrFail($id);
-            return view('staff.restock', compact('product'));
+            $availableQuantity = $product->quantity;
+
+            return view('staff.restock', compact('product', 'availableQuantity'));
         }
         
         public function showUpdateForm($id)
@@ -90,6 +109,17 @@ class StaffController extends Controller
             $inventoryItems = InventoryItem::where('name', 'like', '%' . $search . '%')
                 ->orWhere('category', 'like', '%' . $search . '%') // You can add more columns if necessary
                 ->get();
+
+                 // Modify the quantity display logic
+    $inventoryItems->each(function ($item) {
+        if ($item->restocked || $item->needs_update) {
+            // If restocked or needs update, show the actual quantity
+            $item->display_quantity = $item->quantity;
+        } else {
+            // If no restock or update requested, show 0
+            $item->display_quantity = 0;
+        }
+    });
 
             // Return a view or JSON with the filtered items
             return response()->json($inventoryItems); // You can send data to be used on the frontend
