@@ -58,7 +58,11 @@
                         @php
                             $hasApprovedRestock = $product->inventoryActions->where('action_type', 'restocked')->where('status', 'approved')->isNotEmpty();
                             $hasPendingRestock = $product->inventoryActions->where('action_type', 'restocked')->where('status', 'pending')->isNotEmpty();
-                            $hasUpdateRequest = $product->inventoryActions->where('action_type', 'request_update')->isNotEmpty();
+                         $hasUpdateRequest = $product->inventoryActions
+                            ->where('action_type', 'request_update')
+                            ->where('status', 'pending')
+                            ->isNotEmpty();
+
                         @endphp
                         <tr class="border-t">
                         <td class="px-4 py-3">
@@ -74,11 +78,11 @@
                             </td>
                             <td class="px-4 py-2 text-center">
                               @php
-        $approvedRestocks = $product->inventoryActions
-            ->where('action_type', 'restocked')
-            ->where('status', 'approved')
-            ->sum('quantity');
-    @endphp
+                                    $approvedRestocks = $product->inventoryActions
+                                        ->where('action_type', 'restocked')
+                                        ->where('status', 'approved')
+                                        ->sum('quantity');
+                                @endphp
 
                                 {{ $approvedRestocks }} {{-- Will be 0 if no approved restocks --}}
                             </td>

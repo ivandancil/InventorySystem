@@ -63,23 +63,30 @@ class StaffController extends Controller
     return redirect()->route('staff.dashboard')->with('success', 'Restock request submitted to warehouse.');
 }
 
-
-
         public function requestUpdate(Request $request, $id)
         {
             // Find the product
             $product = InventoryItem::findOrFail($id);
+
+             // Get the current quantity of the product
+    $currentQuantity = $product->quantity;
             
             // Update the product's status
             $product->needs_update = true;  // Mark as needing update
             $product->save();
+
+            // Validate the request to make sure notes are included
+    $validated = $request->validate([
+        'notes' => 'nullable|string', // Only validate the notes field
+    ]);
 
             // Log the action
             InventoryAction::create([
                 'inventory_item_id' => $id,
                 'user_id' => Auth::id(),
                 'action_type' => 'request_update',
-                'notes' => $request->notes,
+                 'notes' => $validated['notes'], // Only store notes, no quantity in the request
+                  'quantity' => $currentQuantity, // Store the current quantity in the action
             ]);
 
             return redirect()->route('staff.dashboard')->with('success', 'Update request submitted.');
@@ -111,19 +118,19 @@ class StaffController extends Controller
                 ->get();
 
                  // Modify the quantity display logic
-    $inventoryItems->each(function ($item) {
-        if ($item->restocked || $item->needs_update) {
-            // If restocked or needs update, show the actual quantity
-            $item->display_quantity = $item->quantity;
-        } else {
-            // If no restock or update requested, show 0
-            $item->display_quantity = 0;
-        }
-    });
+            $inventoryItems->each(function ($item) {
+                if ($item->restocked || $item->needs_update) {
+                    // If restocked or needs update, show the actual quantity
+                    $item->display_quantity = $item->quantity;
+                } else {
+                    // If no restock or update requested, show 0
+                    $item->display_quantity = 0;
+                }
+            });
 
-            // Return a view or JSON with the filtered items
-            return response()->json($inventoryItems); // You can send data to be used on the frontend
-        }
+                    // Return a view or JSON with the filtered items
+                    return response()->json($inventoryItems); // You can send data to be used on the frontend
+                }
 
 
 }

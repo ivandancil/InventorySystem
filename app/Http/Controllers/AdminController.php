@@ -19,9 +19,16 @@ class AdminController extends Controller
         $productNames = $inventoryData->pluck('name');
         $stockCounts = $inventoryData->pluck('quantity')->map(fn($quantity) => (int)$quantity); // Ensure integers
 
-      // For the line chart (Monthly Sales)
+        // Detect DB driver
+    $driver = DB::getDriverName();
+
+    // SQLite uses strftime('%m'), MySQL uses MONTH()
+    $monthExpr = $driver === 'sqlite'
+        ? DB::raw("strftime('%m', created_at) as month")
+        : DB::raw("MONTH(created_at) as month");
+
     $monthlySales = InventoryAdjustment::select(
-            DB::raw('MONTH(created_at) as month'),
+            $monthExpr,
             DB::raw('SUM(quantity * price_php) as total_sales')
         )
         ->groupBy('month')
