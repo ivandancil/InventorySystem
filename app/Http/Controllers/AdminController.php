@@ -14,9 +14,10 @@ class AdminController extends Controller
         $totalProducts = InventoryItem::count();
         $totalStock = InventoryItem::sum('quantity');
 
-         // For the bar chart (Stock Overview)
-    $productNames = InventoryItem::pluck('name');
-    $stockCounts = InventoryItem::pluck('quantity');
+        // Fetch product names and quantities together and ensure they're aligned
+        $inventoryData = InventoryItem::select('name', 'quantity')->get();
+        $productNames = $inventoryData->pluck('name');
+        $stockCounts = $inventoryData->pluck('quantity')->map(fn($quantity) => (int)$quantity); // Ensure integers
 
       // For the line chart (Monthly Sales)
     $monthlySales = InventoryAdjustment::select(
@@ -33,6 +34,7 @@ class AdminController extends Controller
     for ($i = 1; $i <= 12; $i++) {
         $fullMonthlySales[] = $monthlySales[$i] ?? 0;
     }
+    
 
      return view('admin.dashboard', compact(
         'totalProducts',

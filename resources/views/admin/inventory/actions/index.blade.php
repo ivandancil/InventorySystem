@@ -38,8 +38,9 @@
                             <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 {{ __('Action') }}
                             </th>
-                             <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                                {{ __('Quantity') }}
+                            
+                             <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider ">
+                                {{ __('Request Quantity') }}
                             </th>
                             <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 {{ __('Notes') }}
@@ -57,27 +58,46 @@
                             <tr>
                                 <td class="px-6 py-3 whitespace-nowrap">{{ $action->inventoryItem->name }}</td>
                                 <td class="px-6 py-3 whitespace-nowrap capitalize">{{ str_replace('_', ' ', $action->action_type) }}</td>  
-                                <td class="px-6 py-3 whitespace-nowrap">{{ $action->quantity ?? '—' }}</td>  
+                                <td class="px-6 py-3 whitespace-nowrap text-center font-bold">{{ $action->quantity ?? '—' }}</td>  
                                 <td class="px-6 py-3 whitespace-nowrap">{{ $action->notes ?? '—' }}</td>  
                                 <td class="px-6 py-3 whitespace-nowrap">{{ $action->created_at->format('Y-m-d H:i') }}</td> 
 
-                                @if (in_array($action->action_type, ['restocked', 'request_update']))
-                                    <td class="px-6 py-3 whitespace-nowrap">
+                               @if (in_array($action->action_type, ['restocked', 'request_update']))
+                        <td class="px-6 py-3 text-center text-sm font-medium">
+                            <div class="flex justify-center items-center gap-3">
+
+                                @if ($action->status === 'pending')
+                                    <!-- Approve Form -->
                                     <form action="{{ route('admin.inventory.inventoryActions.approve', ['item' => $action->inventory_item_id, 'type' => $action->action_type]) }}"
-      method="POST">
-    @csrf
-    <button type="submit"
-            class="{{ $action->status === 'approved' ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600' }} text-white px-3 py-1.5 rounded text-sm"
-            {{ $action->status === 'approved' ? 'disabled' : '' }}>
-        {{ $action->status === 'approved' ? 'Approved' : 'Confirm' }}
-    </button>
-</form>
+                                        method="POST" onsubmit="handleButtonClick('approve', {{ $action->id }})">
+                                        @csrf
+                                        <button id="approve-btn-{{ $action->id }}" type="submit"
+                                            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm">
+                                            Approve
+                                        </button>
+                                    </form>
 
-
-                                    </td>
-                                @else
-                                    <td class="px-6 py-3 whitespace-nowrap text-gray-400">—</td>
+                                    <!-- Reject Form -->
+                                    <form action="{{ route('admin.inventory.inventoryActions.reject', ['item' => $action->inventory_item_id, 'type' => $action->action_type]) }}"
+                                        method="POST" onsubmit="handleButtonClick('reject', {{ $action->id }})">
+                                        @csrf
+                                        <button id="reject-btn-{{ $action->id }}" type="submit"
+                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">
+                                            Reject
+                                        </button>
+                                    </form>
+                                @elseif ($action->status === 'approved')
+                                    <span class="text-green-600 font-semibold">Approved</span>
+                                @elseif ($action->status === 'rejected')
+                                    <span class="text-red-600 font-semibold">Rejected</span>
                                 @endif
+
+                            </div>
+                        </td>
+                        @else
+                        <td class="px-6 py-3 whitespace-nowrap text-gray-400">—</td>
+                        @endif
+
                             </tr>
                         @empty
                             <tr>
@@ -95,7 +115,25 @@
         </div>
     </div>
 
-    
+  <script>
+    function handleButtonClick(action, actionId) {
+        const approveBtn = document.getElementById(`approve-btn-${actionId}`);
+        const rejectBtn = document.getElementById(`reject-btn-${actionId}`);
+
+        if (action === 'approve') {
+            if (rejectBtn) {
+                rejectBtn.disabled = true;
+                rejectBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            }
+        } else if (action === 'reject') {
+            if (approveBtn) {
+                approveBtn.disabled = true;
+                approveBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            }
+        }
+    }
+</script>
+  
 
 
 </x-app-layout>

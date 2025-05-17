@@ -67,7 +67,28 @@
                             <tbody id="inventory-table-body"  class="bg-white divide-y divide-gray-200">
                                 @foreach ($inventoryItems as $item)
                                     <tr>
-                                        <td class="px-6 py-3 whitespace-nowrap">{{ $item->name }}</td>
+                                    <td class="px-6 py-3 whitespace-nowrap">
+                                        <div class="flex flex-col">
+                                            <span class="font-medium text-gray-800">{{ $item->name }}</span>
+
+                                            <!-- Pending Restock Requests Badge -->
+                                                @if ($item->pending_restock_requests_count > 0)
+                                                    <a href="{{ route('admin.inventory.inventoryActions', ['item' => $item->id]) }}"
+                                                    class="mt-1 inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full w-fit hover:bg-yellow-200 transition">
+                                                        {{ $item->pending_restock_requests_count }} Pending Restock Request{{ $item->pending_restock_requests_count > 1 ? 's' : '' }}
+                                                    </a>
+                                                @endif
+
+                                          <!-- Pending Update Requests Badge -->
+                                                @if ($item->pending_update_requests_count > 0)
+                                                    <a href="{{ route('admin.inventory.inventoryActions', ['item' => $item->id]) }}"
+                                                    class="mt-1 inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full w-fit hover:bg-blue-200 transition">
+                                                        {{ $item->pendingUpdateRequests->count() }} Pending Update Request{{ $item->pendingUpdateRequests->count() > 1 ? 's' : '' }}
+                                                    </a>
+                                                @endif
+                                        </div>
+                                    </td>
+
                                         <!-- <td class="px-6 py-4 whitespace-nowrap">{{ $item->description ?? '-' }}</td> -->
                                         <td class="px-6 py-3 text-center whitespace-nowrap">{{ $item->quantity }}</td>
                                         <td class="px-6 py-3 text-right whitespace-nowrap">₱{{ number_format($item->price_php, 2) }}</td>
