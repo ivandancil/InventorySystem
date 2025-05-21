@@ -41,6 +41,12 @@ Route::middleware('auth')->group(function () {
                Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
             Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
 
+              // Updated reject route to show the form
+    Route::get('/inventory-actions/{action}/reject-form', [InventoryActionController::class, 'showRejectionForm'])->name('inventoryActions.rejectionForm');
+    
+    // New route to handle rejection with note submission
+    Route::post('/inventory-actions/{action}/reject', [InventoryActionController::class, 'rejectWithNote'])->name('inventoryActions.rejectWithNote');
+
 
               Route::get('/{inventoryItem}/adjust', [InventoryAdjustmentController::class, 'create'])->name('adjust');
             Route::post('/{inventoryItem}/adjust', [InventoryAdjustmentController::class, 'store'])
@@ -61,7 +67,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/dashboard/{id}/request-update', [StaffController::class, 'requestUpdate'])->name('requestUpdate');
        Route::get('/dashboard/live-search', [StaffController::class, 'liveSearch'])->name('dashboard.liveSearch');
          Route::get('/dashboard/generate-inventory-report', [StaffController::class, 'generateInventoryReport'])->name('generateInventoryReport');
-
+    Route::get('/dashboard/rejected-restock/{product}', [StaffController::class, 'viewRejectedRestock'])->name('viewRejectedRestock');
         
 
     });

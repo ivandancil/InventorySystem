@@ -82,5 +82,27 @@ public function reject($itemId, $type)
     return redirect()->back()->with('success', 'Request has been rejected.');
 }
 
+public function showRejectionForm($actionId)
+{
+    $action = InventoryAction::findOrFail($actionId);
+    return view('admin.inventory.rejection-form', compact('action'));
+}
+
+public function rejectWithNote(Request $request, $actionId)
+{
+    $request->validate([
+        'notes' => 'required|string|max:1000', // Ensure notes are required
+    ]);
+
+    $action = InventoryAction::findOrFail($actionId);
+    $action->status = 'rejected';
+    $action->notes = $request->notes;  // Save rejection reason
+    $action->save();
+
+    return redirect()->route('admin.inventory.inventoryActions')
+        ->with('success', 'Action rejected with notes.');
+}
+
+
 
 }

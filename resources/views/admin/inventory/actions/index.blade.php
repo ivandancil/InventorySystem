@@ -77,15 +77,12 @@
                                         </button>
                                     </form>
 
-                                    <!-- Reject Form -->
-                                    <form action="{{ route('admin.inventory.inventoryActions.reject', ['item' => $action->inventory_item_id, 'type' => $action->action_type]) }}"
-                                        method="POST" onsubmit="handleButtonClick('reject', {{ $action->id }})">
-                                        @csrf
-                                        <button id="reject-btn-{{ $action->id }}" type="submit"
-                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">
-                                            Reject
-                                        </button>
-                                    </form>
+                                   <!-- Redirect to Rejection Form -->
+                                    <a href="{{ route('admin.inventory.inventoryActions.rejectionForm', ['action' => $action->id]) }}"
+                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">
+                                        Reject
+                                    </a>
+
                                 @elseif ($action->status === 'approved')
                                     <span class="text-green-600 font-semibold">Approved</span>
                                 @elseif ($action->status === 'rejected')

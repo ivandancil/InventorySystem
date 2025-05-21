@@ -23,7 +23,11 @@ class StaffController extends Controller
             });
         }
 
-         $products = $query->with('inventoryActions')->paginate(10);
+          // Retrieve products with their related actions (including rejected actions)
+    $products = $query->with(['inventoryActions' => function ($query) {
+        // Include actions that are either pending, approved, or rejected
+        $query->whereIn('status', ['pending', 'approved', 'rejected']);
+    }])->paginate(10);
 
 
     return view('staff.dashboard', compact('products'));
@@ -151,4 +155,24 @@ class StaffController extends Controller
             ->header('Content-Type', 'text/csv')
             ->header('Content-Disposition', 'attachment; filename="inventory_report.csv"');
     }
+
+   public function viewRejectedRestock($id)
+{
+    $product = InventoryItem::with('inventoryActions')->findOrFail($id);
+
+    $rejectedRestock = $product->inventoryActions
+        ->where('action_type', 'restocked')
+        ->where('status', 'rejected')
+        ->sortByDesc('created_at')
+        ->first();
+
+    if (!$rejectedRestock) {
+        return redirect()->route('staff.dashboard')->with('error', 'No rejected restock found for this item.');
+    }
+
+    return view('staff.rejected-restock', [
+        'product' => $product,
+        'rejectionReason' => $rejectedRestock->reason ?? 'No reason provided.',
+    ]);
+}
 }
