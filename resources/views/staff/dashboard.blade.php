@@ -19,11 +19,15 @@
     <div class="pt-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-            <div class="flex justify-end">
-
-              <!-- Live Search Bar -->
-                <form method="GET" action="{{  route('staff.dashboard.liveSearch') }}" class="flex items-center space-x-2">
-                      <input type="text" name="search" id="live-search-input" value="{{ request()->query('search') }}" class="px-4 py-2 border border-gray-500 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Search inventory..." autocomplete="off" />
+             <div class="flex justify-end space-x-4">
+            <!-- Export CSV Button -->
+                <a href="{{ route('staff.generateInventoryReport') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-900 active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-500 disabled:opacity-25 transition ease-in-out duration-150">
+                    <i class="fas fa-file-csv mr-2"></i> {{ __('Export CSV') }}
+                </a>
+                
+            <!-- Live Search Bar -->
+                <form method="GET" action="{{ route('staff.dashboard.liveSearch') }}" class="flex items-center space-x-2">
+                    <input type="text" name="search" id="live-search-input" value="{{ request()->query('search') }}" class="px-4 py-2 border border-gray-500 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Search inventory..." autocomplete="off" />
                 </form>
             </div>
 

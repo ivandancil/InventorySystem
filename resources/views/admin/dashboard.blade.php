@@ -66,6 +66,12 @@
                                 class="inline-flex items-center justify-center w-64 mx-auto px-4 py-2 bg-black text-white border border-green-800 rounded-md text-sm font-medium hover:bg-black transition">
                                     <i class="fas fa-tasks mr-2"></i> View Inventory Logs
                                 </a>
+
+                                  <!-- New Reports Button -->
+                                <a href="{{ route('admin.inventory.reports.index') }}"
+                                    class="inline-flex items-center justify-center w-64 mx-auto px-4 py-2 bg-black text-white border border-red-800 rounded-md text-sm font-medium hover:bg-black transition">
+                                    <i class="fas fa-chart-line mr-2"></i> View Reports
+                                </a>
                               
                             </div>
                         </div>
