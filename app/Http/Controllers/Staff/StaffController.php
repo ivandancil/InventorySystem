@@ -133,4 +133,22 @@ class StaffController extends Controller
                 }
 
 
+                   public function generateInventoryReport()
+    {
+        // Retrieve the products (you can adjust this according to your needs)
+        $products = InventoryItem::all(); // Or paginate as needed
+
+        // Create CSV content
+        $csvContent = "Name,Category,Price (PHP), Unit Type, Unit Per Package, Total Value (PHP)\n";  // Header row
+
+        foreach ($products as $product) {
+            $totalValue = $product->price_php * $product->quantity; // Calculate total value for each product
+            $csvContent .= "{$product->name},{$product->category},{$product->price_php},{$product->unit_type},{$product->units_per_package},{$totalValue}\n";  // Product data
+        }
+
+        // Return the response with appropriate headers to download the CSV file
+        return response($csvContent)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', 'attachment; filename="inventory_report.csv"');
+    }
 }

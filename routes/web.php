@@ -7,6 +7,7 @@ use App\Http\Controllers\Staff\StaffController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\InventoryAdjustmentController;
 use App\Http\Controllers\Admin\InventoryActionController;
+use App\Http\Controllers\Admin\ReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,6 +38,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/inventory-actions/{item}/reject/{type}', [InventoryActionController::class, 'reject'])->name('inventoryActions.reject'); // Reject route
             Route::get('/live-search', [InventoryController::class, 'liveSearch'])->name('liveSearch');
 
+               Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+            Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
 
 
               Route::get('/{inventoryItem}/adjust', [InventoryAdjustmentController::class, 'create'])->name('adjust');
@@ -57,6 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/dashboard/{id}/restock', [StaffController::class, 'markRestocked'])->name('markRestocked');
         Route::post('/dashboard/{id}/request-update', [StaffController::class, 'requestUpdate'])->name('requestUpdate');
        Route::get('/dashboard/live-search', [StaffController::class, 'liveSearch'])->name('dashboard.liveSearch');
+         Route::get('/dashboard/generate-inventory-report', [StaffController::class, 'generateInventoryReport'])->name('generateInventoryReport');
 
         
 
